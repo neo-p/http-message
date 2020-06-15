@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "NeoP\\Http\\Message": "src/"
+            "NeoP\\Http\\Message\\": "src/"
         }
     }
 }
