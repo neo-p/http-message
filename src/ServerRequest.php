@@ -62,6 +62,12 @@ class ServerRequest extends Message implements ServerRequestInterface
      */
     protected $uri;
 
+    /**
+     * @var string
+     */
+    protected $method;
+
+
     public function __construct(SwooleRequest $swooleRequest)
     {
         $protocolVersion = isset($swooleRequest->server["server_protocol"]) ? str_replace('HTTP/', '', $swooleRequest->server["server_protocol"]) : '1.1';
@@ -76,6 +82,7 @@ class ServerRequest extends Message implements ServerRequestInterface
         $this->cookieParams = $swooleRequest->cookie ?? [];
         $this->queryParams = $swooleRequest->get ?? [];
         $this->postParams = $swooleRequest->post ?? [];
+        $this->withMethod(strtoupper($this->getServerParam('request_method')));
         $this->parsedBody = $this->getCurrentParsedBody();
         $this->uploadedFiles = UploadedFile::parseFiles($swooleRequest->files ?? []);
     }
@@ -83,6 +90,11 @@ class ServerRequest extends Message implements ServerRequestInterface
     public function getPostParams()
     {
         return $this->postParams ?? [];
+    }
+
+    public function getServerParam(string $key = '')
+    {
+        return $this->serverParams[$key] ?? '';
     }
 
     /**
